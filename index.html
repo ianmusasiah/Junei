@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USA Study Route Survey</title>
+
+
+  <style>
+    
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fff0f8, #f0e6ff, #e8dcff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #453052;
+}
+
+.app {
+    width: 100%;
+    max-width: 650px;
+    min-height: 500px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 28px;
+    padding: 35px;
+    box-shadow: 0 15px 45px rgba(120, 70, 150, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.screen {
+    display: none;
+    animation: appear .45s ease;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.badge {
+    display: inline-block;
+    background: #fce1f0;
+    color: #b04491;
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 22px;
+}
+
+h1 {
+    font-size: 34px;
+    color: #783e91;
+    line-height: 1.2;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 25px;
+    color: #783e91;
+    margin-bottom: 12px;
+}
+
+p {
+    color: #786b82;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+}
+
+.primary-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 15px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #e77bbd, #9d70d5);
+    margin-top: 28px;
+    transition: .3s;
+}
+
+.primary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(180, 100, 190, .25);
+}
+
+.progress-area {
+    margin-bottom: 30px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #987ba9;
+    margin-bottom: 10px;
+}
+
+.progress-track {
+    height: 9px;
+    background: #f2e4f5;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #e77bbd, #9d70d5);
+    border-radius: 20px;
+    transition: width .4s ease;
+}
+
+.question {
+    font-size: 25px;
+    color: #713d89;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    margin-bottom: 25px;
+}
+
+.answers {
+    display: grid;
+    gap: 13px;
+}
+
+.answer {
+    width: 100%;
+    padding: 17px;
+    border-radius: 17px;
+    border: 2px solid #f1e1f4;
+    background: #fff9fd;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+    transition: .25s;
+    color: #594665;
+    font-size: 15px;
+}
+
+.answer:hover {
+    border-color: #d78acb;
+    background: #fff0f9;
+    transform: translateX(5px);
+}
+
+.answer.selected {
+    border-color: #b66bd0;
+    background: #f6e9ff;
+}
+
+.answer-icon {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    border-radius: 13px;
+    background: #f6e0f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 23px;
+}
+
+.navigation {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.back-btn {
+    padding: 14px 20px;
+    background: #f2e7f7;
+    color: #85549c;
+    border-radius: 13px;
+    font-weight: bold;
+}
+
+.navigation .primary-btn {
+    margin: 0;
+    flex: 1;
+}
+
+.navigation button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+/* Loading screen */
+
+.loading {
+    text-align: center;
+    padding: 80px 10px;
+}
+
+.loader {
+    width: 65px;
+    height: 65px;
+    border: 6px solid #f3dff0;
+    border-top: 6px solid #b66bd0;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 25px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Results */
+
+.result-label {
+    display: inline-block;
+    background: #f8e1f1;
+    color: #b04491;
+    padding: 8px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.recommendation {
+    background: linear-gradient(135deg, #fce6f4, #eee3ff);
+    padding: 23px;
+    border-radius: 20px;
+    margin: 22px 0;
+}
+
+.recommendation h2 {
+    font-size: 23px;
+}
+
+.route-card {
+    border: 1px solid #eee0f2;
+    border-radius: 17px;
+    padding: 18px;
+    margin-top: 15px;
+    background: #fffafd;
+}
+
+.route-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    color: #75428c;
+    margin-bottom: 10px;
+}
+
+.route-title span {
+    font-size: 24px;
+}
+
+.route-card p {
+    font-size: 14px;
+}
+
+.bar-track {
+    height: 12px;
+    background: #f0e4f3;
+    border-radius: 20px;
+    margin: 13px 0;
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    width: 0;
+    border-radius: 20px;
+    transition: width 1.2s ease;
+    background: linear-gradient(90deg, #e77bbd, #9d70d5);
+}
+
+.time-text {
+    font-size: 13px;
+    color: #a052a1;
+    font-weight: bold;
+}
+
+.notice {
+    background: #fff5e9;
+    border-left: 4px solid #e9b66e;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-size: 13px;
+    color: #816548;
+    line-height: 1.6;
+}
+
+.restart {
+    background: #f2e7f7;
+    color: #85549c;
+    padding: 15px;
+    border-radius: 14px;
+    width: 100%;
+    font-weight: bold;
+    margin-top: 22px;
+}
+
+@media(max-width: 500px) {
+    .app {
+        padding: 25px 20px;
+    }
+
+    h1 {
+        font-size: 29px;
+    }
+
+    .question {
+        font-size: 22px;
+    }
+}
+
+
+
+/* JOURNEY TIMELINE */
+
+.timeline-heading {
+    margin: 25px 0 15px;
+    font-size: 19px;
+    color: #75428c;
+}
+
+.journey-card {
+    background: #fffafd;
+    border: 1px solid #f0e2f3;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 18px 0;
+    overflow: hidden;
+}
+
+.journey-card.route-a {
+    --route-color: #e77bbd;
+    --route-light: #fff0f8;
+    --route-dark: #bd5797;
+}
+
+.journey-card.route-b {
+    --route-color: #9874dc;
+    --route-light: #f2edff;
+    --route-dark: #7952bd;
+}
+
+.journey-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.journey-name {
+    font-size: 17px;
+    font-weight: bold;
+    color: var(--route-dark);
+}
+
+.route-tag {
+    background: var(--route-light);
+    color: var(--route-dark);
+    padding: 7px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.total-time {
+    background: var(--route-light);
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+}
+
+.total-time strong {
+    display: block;
+    font-size: 25px;
+    color: var(--route-dark);
+    margin-top: 5px;
+}
+
+.total-time small {
+    color: #88788f;
+}
+
+.stage {
+    margin-bottom: 22px;
+    position: relative;
+    padding-left: 42px;
+}
+
+.stage:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    top: 37px;
+    height: calc(100% + 5px);
+    width: 2px;
+    background: var(--route-color);
+    opacity: .3;
+}
+
+.stage-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 34px;
+    height: 34px;
+    background: var(--route-light);
+    border: 1px solid var(--route-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    z-index: 1;
+}
+
+.stage-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #61496d;
+}
+
+.stage-duration {
+    font-size: 12px;
+    color: var(--route-dark);
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.stage-description {
+    font-size: 12px;
+    color: #93859a;
+    line-height: 1.5;
+}
+
+.stage-track {
+    width: 100%;
+    height: 9px;
+    background: #f0e8f2;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 9px;
+}
+
+.stage-bar {
+    height: 100%;
+    width: 0;
+    background: var(--route-color);
+    border-radius: 20px;
+    transition: width 1s ease;
+}
+
+.finish-line {
+    background: var(--route-light);
+    border-radius: 13px;
+    padding: 13px;
+    color: var(--route-dark);
+    font-weight: bold;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.timeline-note {
+    font-size: 12px;
+    color: #86758e;
+    line-height: 1.7;
+    margin: 15px 0;
+}
+
+@media(max-width: 500px) {
+    .journey-card {
+        padding: 15px;
+    }
+
+    .journey-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- WELCOME SCREEN -->
+    <section class="screen active" id="welcome">
+
+        <span class="badge">✦ YOUR STUDY JOURNEY ✦</span>
+
+        <h1>Which route should you take to reach the USA? 🇺🇸</h1>
+
+        <p>
+            Answer a few simple questions and discover which
+            education pathway may suit your plans best.
+        </p>
+
+        <div style="font-size:75px; text-align:center; margin:35px 0;">
+            🎓 ✈️
+        </div>
+
+        <button class="primary-btn" onclick="startSurvey()">
+            Start Process →
+        </button>
+      
+     
+
+        <p style="text-align:center; font-size:12px; margin-top:15px;">
+            Takes about 1 minute
+        </p>
+
+    </section>
+
+
+    <!-- SURVEY SCREEN -->
+    <section class="screen" id="survey">
+
+        <div class="progress-area">
+
+            <div class="progress-info">
+                <span id="questionNumber">QUESTION 1 OF 4</span>
+                <span id="percentage">25%</span>
+            </div>
+
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+        </div>
+
+        <h2 class="question" id="questionTitle"></h2>
+        <p class="subtitle" id="questionSubtitle"></p>
+
+        <div class="answers" id="answerOptions"></div>
+
+        <div class="navigation">
+
+            <button class="back-btn" onclick="previousQuestion()">
+                ← Back
+            </button>
+
+            <button class="primary-btn" id="nextBtn" onclick="nextQuestion()" disabled>
+                Continue →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- LOADING SCREEN -->
+    <section class="screen" id="loading">
+
+        <div class="loading">
+            <div class="loader"></div>
+
+            <h2>Analyzing your answers...</h2>
+
+            <p>
+                Comparing your education pathways and calculating
+                your best next step.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- RESULTS SCREEN -->
+    <section class="screen" id="results">
+
+    <span class="result-label">✦ YOUR JOURNEY ANALYSIS ✦</span>
+
+    <h1>Your road to the USA 🇺🇸</h1>
+
+    <p>
+        Here's how each pathway could look, from your current
+        education stage in Kenya to arriving in the USA.
+    </p>
+
+    <div class="recommendation">
+        <h2 id="resultHeading"></h2>
+        <p id="resultDescription"></p>
+    </div>
+
+    <h2 class="timeline-heading">📊 Route A: Kenya → USA</h2>
+
+    <div class="journey-card route-a">
+
+        <div class="journey-header">
+            <div class="journey-name">🇺🇸 Direct USA pathway</div>
+            <span class="route-tag">PINK ROUTE</span>
+        </div>
+
+        <div class="total-time">
+            <small>Indicative total journey from now</small>
+            <strong>18–30 months</strong>
+            <small>Approximately 1.5–2.5 years</small>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">📚</div>
+            <div class="stage-title">1. Complete KCSE</div>
+            <div class="stage-duration">6–12 months</div>
+            <div class="stage-description">
+                Finish your secondary education, sit your KCSE
+                examinations and wait for your results.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="20"></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">🎓</div>
+            <div class="stage-title">2. Apply to US universities</div>
+            <div class="stage-duration">4–8 months</div>
+            <div class="stage-description">
+                Research universities, submit applications,
+                apply for scholarships and receive an admission decision.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="13"></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">📄</div>
+            <div class="stage-title">3. Receive your I-20</div>
+            <div class="stage-duration">1–3 months</div>
+            <div class="stage-description">
+                Meet the university's financial requirements and
+                complete the documents needed for your I-20.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="5"></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">🛂</div>
+            <div class="stage-title">4. Apply for your F-1 visa</div>
+            <div class="stage-duration">1–3 months or longer</div>
+            <div class="stage-description">
+                Complete the required visa application steps,
+                pay applicable fees, attend your interview if required,
+                and await a decision.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="5"></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">✈️</div>
+            <div class="stage-title">5. Travel to the USA</div>
+            <div class="stage-duration">1–2 months</div>
+            <div class="stage-description">
+                Finalise your travel arrangements and prepare
+                for your university's reporting date.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="4"></div>
+            </div>
+        </div>
+
+        <div class="finish-line">
+            🏁 FINAL DESTINATION: ARRIVAL IN THE USA 🇺🇸
+        </div>
+
+    </div>
+
+
+    <h2 class="timeline-heading">📊 Route B: Kenya → Malaysia → USA</h2>
+
+    <div class="journey-card route-b">
+
+        <div class="journey-header">
+            <div class="journey-name">🇲🇾 Malaysia first pathway</div>
+            <span class="route-tag">PURPLE ROUTE</span>
+        </div>
+
+        <div class="total-time">
+            <small>Indicative total journey from now</small>
+            <strong>3–5+ years</strong>
+            <small>Depends heavily on the Malaysian programme</small>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">📚</div>
+            <div class="stage-title">1. Complete KCSE</div>
+            <div class="stage-duration">6–12 months</div>
+            <div class="stage-description">
+                Complete your secondary education and obtain
+                your KCSE results before proceeding with your plans.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="20"></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">🏆</div>
+            <div class="stage-title">2. Apply to Sunway University</div>
+            <div class="stage-duration">3–9 months</div>
+            <div class="stage-description">
+                Apply for admission and scholarships, complete
+                the required documentation and arrange your
+                Malaysian student visa.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="15"></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">🏫</div>
+            <div class="stage-title">3. Study in Malaysia</div>
+            <div class="stage-duration">2–4 years or more</div>
+            <div class="stage-description">
+                Complete your chosen programme. The duration
+                depends on whether you take a foundation,
+                diploma or degree programme.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="75"></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">🎓</div>
+            <div class="stage-title">4. Apply to US universities</div>
+            <div class="stage-duration">4–8 months</div>
+            <div class="stage-description">
+                Apply separately to a US university.
+                Your Malaysian qualification must meet the
+                university's admission requirements.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="13"></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">📄</div>
+            <div class="stage-title">5. Receive your I-20</div>
+            <div class="stage-duration">1–3 months</div>
+            <div class="stage-description">
+                Meet the US university's admission and financial
+                requirements and receive your I-20.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="5"></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">🛂</div>
+            <div class="stage-title">6. Apply for your F-1 visa</div>
+            <div class="stage-duration">1–3 months or longer</div>
+            <div class="stage-description">
+                Complete the F-1 visa process, attend an interview
+                if required and await the decision.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="5"></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-icon">✈️</div>
+            <div class="stage-title">7. Travel to the USA</div>
+            <div class="stage-duration">1–2 months</div>
+            <div class="stage-description">
+                Make travel arrangements and prepare to begin
+                your studies in the United States.
+            </div>
+            <div class="stage-track">
+                <div class="stage-bar" data-width="4"></div>
+            </div>
+        </div>
+
+        <div class="finish-line">
+            🏁 FINAL DESTINATION: ARRIVAL IN THE USA 🇺🇸
+        </div>
+
+    </div>
+
+    <div class="notice">
+        <strong>Important timeline information:</strong><br><br>
+
+        These are illustrative planning ranges, not official
+        processing guarantees. Some stages can overlap, and actual
+        timelines depend on admission deadlines, scholarship decisions,
+        university requirements, visa appointment availability and
+        programme duration.<br><br>
+
+        The Malaysian route does not automatically transfer you
+        to a US university. You must apply separately and qualify
+        for admission and an F-1 visa.<br><br>
+
+        Completing KCSE keeps both pathways open. Do not leave
+        secondary school for an unconfirmed scholarship.
+    </div>
+
+    <button class="restart" onclick="restartSurvey()">
+        ↻ Take Survey Again
+    </button>
+
+</section>
+
+</div>
+  
+  
+
+
+<script>
+
+const questions = [
+
+    {
+        title: "What is your current education status?",
+        subtitle: "Let's start with where you are right now.",
+        answers: [
+            {
+                icon: "📚",
+                text: "I'm preparing for KCSE in 2027",
+                value: "kcse"
+            },
+            {
+                icon: "🎓",
+                text: "I've already completed KCSE",
+                value: "completed"
+            },
+            {
+                icon: "🏫",
+                text: "I haven't completed KCSE",
+                value: "unfinished"
+            }
+        ]
+    },
+
+    {
+        title: "What is your main goal?",
+        subtitle: "Which destination matters most to you?",
+        answers: [
+            {
+                icon: "🇺🇸",
+                text: "I want to reach the USA as soon as possible",
+                value: "usa"
+            },
+            {
+                icon: "🌍",
+                text: "I'm open to studying in another country first",
+                value: "open"
+            },
+            {
+                icon: "🇲🇾",
+                text: "I prefer Malaysia first, then the USA",
+                value: "malaysia"
+            }
+        ]
+    },
+
+    {
+        title: "How will you finance your studies?",
+        subtitle: "Think about tuition, accommodation and living costs.",
+        answers: [
+            {
+                icon: "🏆",
+                text: "I need a full scholarship",
+                value: "full"
+            },
+            {
+                icon: "💰",
+                text: "I can contribute some money",
+                value: "partial"
+            },
+            {
+                icon: "🤔",
+                text: "My funding plan is not yet decided",
+                value: "unknown"
+            }
+        ]
+    },
+
+    {
+        title: "What is the status of your Sunway scholarship?",
+        subtitle: "This helps us understand how realistic Route B currently is.",
+        answers: [
+            {
+                icon: "✅",
+                text: "I have received a confirmed written offer",
+                value: "confirmed"
+            },
+            {
+                icon: "⏳",
+                text: "I've applied and I'm waiting",
+                value: "waiting"
+            },
+            {
+                icon: "❌",
+                text: "I haven't applied yet",
+                value: "notapplied"
+            }
+        ]
+    }
+
+];
+
+let currentQuestion = 0;
+let answers = [];
+
+function showScreen(id) {
+
+    document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+
+}
+
+function startSurvey() {
+
+    currentQuestion = 0;
+    answers = [];
+
+    showScreen("survey");
+    displayQuestion();
+
+}
+
+function displayQuestion() {
+
+    const question = questions[currentQuestion];
+
+    document.getElementById("questionNumber").textContent =
+        `QUESTION ${currentQuestion + 1} OF ${questions.length}`;
+
+    const percentage = Math.round(
+        ((currentQuestion + 1) / questions.length) * 100
+    );
+
+    document.getElementById("percentage").textContent =
+        percentage + "%";
+
+    document.getElementById("progressFill").style.width =
+        percentage + "%";
+
+    document.getElementById("questionTitle").textContent =
+        question.title;
+
+    document.getElementById("questionSubtitle").textContent =
+        question.subtitle;
+
+    const container = document.getElementById("answerOptions");
+
+    container.innerHTML = "";
+
+    question.answers.forEach(answer => {
+
+        const button = document.createElement("button");
+
+        button.className = "answer";
+
+        if (answers[currentQuestion] === answer.value) {
+            button.classList.add("selected");
+        }
+
+        button.innerHTML = `
+            <div class="answer-icon">${answer.icon}</div>
+            <span>${answer.text}</span>
+        `;
+
+        button.onclick = () => selectAnswer(answer.value, button);
+
+        container.appendChild(button);
+
+    });
+
+    document.getElementById("nextBtn").disabled =
+        !answers[currentQuestion];
+
+    document.getElementById("nextBtn").textContent =
+        currentQuestion === questions.length - 1
+        ? "See My Results ✨"
+        : "Continue →";
+
+}
+
+function selectAnswer(value, button) {
+
+    answers[currentQuestion] = value;
+
+    document.querySelectorAll(".answer").forEach(answer => {
+        answer.classList.remove("selected");
+    });
+
+    button.classList.add("selected");
+
+    document.getElementById("nextBtn").disabled = false;
+
+}
+
+function nextQuestion() {
+
+    if (!answers[currentQuestion]) return;
+
+    if (currentQuestion < questions.length - 1) {
+
+        currentQuestion++;
+
+        displayQuestion();
+
+    } else {
+
+        showScreen("loading");
+
+        setTimeout(showResults, 1400);
+
+    }
+
+}
+
+function previousQuestion() {
+
+    if (currentQuestion > 0) {
+
+        currentQuestion--;
+
+        displayQuestion();
+
+    } else {
+
+        showScreen("welcome");
+
+    }
+
+}
+
+function showResults() {
+
+    const education = answers[0];
+    const goal = answers[1];
+    const funding = answers[2];
+    const scholarship = answers[3];
+
+    let heading = "Direct USA is likely the faster route 🇺🇸";
+
+    let description =
+        "Since reaching the USA is your main goal, completing KCSE and applying directly to US universities is likely to be the shorter pathway. You can also explore scholarships at US universities.";
+
+    if (goal === "malaysia") {
+
+        heading = "Malaysia first matches your preference 🇲🇾";
+
+        description =
+            "You prefer studying in Malaysia before moving to the USA. This can be a valid pathway if you secure suitable funding, but it is generally longer. You will still need separate US university admission and an F-1 visa.";
+
+    } else if (scholarship === "confirmed" && funding === "full") {
+
+        heading = "Your Sunway scholarship deserves consideration 🏆";
+
+        description =
+            "A confirmed scholarship could make Malaysia a realistic option. Check exactly what it covers, its conditions and the programme duration. If reaching the USA quickly is your priority, direct applications after KCSE are still likely to be faster.";
+
+    } else if (goal === "open") {
+
+        heading = "Keep both pathways open 🌍";
+
+        description =
+            "You are flexible about where you study first. Complete KCSE, investigate scholarships in both countries and compare actual costs before deciding.";
+
+    }
+
+    if (education === "unfinished") {
+
+        description +=
+            " Completing your secondary education should remain your first priority. Avoid leaving school for a scholarship that has not been formally confirmed.";
+
+    }
+
+    document.getElementById("resultHeading").textContent = heading;
+
+    document.getElementById("resultDescription").textContent =
+        description;
+
+    showScreen("results");
+
+    // Animate every timeline bar
+    setTimeout(() => {
+
+        document.querySelectorAll(".stage-bar").forEach(bar => {
+
+            bar.style.width = bar.dataset.width + "%";
+
+        });
+
+    }, 350);
+
+}
+
+function restartSurvey() {
+
+    currentQuestion = 0;
+    answers = [];
+
+    document.getElementById("routeABar").style.width = "0";
+    document.getElementById("routeBBar").style.width = "0";
+
+    showScreen("welcome");
+
+}
+
+</script>
+
+</body>
+</html>
